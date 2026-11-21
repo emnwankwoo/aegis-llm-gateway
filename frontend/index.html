@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AegisGate · LLM Security Gateway</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1l7 7-7 7-7-7z' fill='%234f8cff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="shield" aria-hidden="true">◆</span>
+      <div>
+        <h1>AegisGate</h1>
+        <p>LLM security gateway · guardrail proxy</p>
+      </div>
+    </div>
+    <div id="health" class="pill pill-muted">checking…</div>
+  </header>
+
+  <main class="grid">
+    <!-- ===================== Playground ===================== -->
+    <section class="panel" aria-labelledby="pg-title">
+      <h2 id="pg-title">Prompt playground</h2>
+
+      <label for="clientKey">Client API key</label>
+      <input id="clientKey" type="password" autocomplete="off" placeholder="X-API-Key for /v1/chat">
+
+      <label for="prompt">Prompt</label>
+      <textarea id="prompt" rows="6" maxlength="8000"
+        placeholder="Ask something — or try an attack from the presets below."></textarea>
+
+      <div class="presets" id="presets" aria-label="Example prompts"></div>
+
+      <button id="sendBtn" class="btn-primary">Send through gateway</button>
+
+      <div id="result" class="result hidden" aria-live="polite">
+        <div class="result-head">
+          <span id="resultAction" class="pill"></span>
+          <span id="resultRisk" class="muted"></span>
+          <span id="resultId" class="muted mono"></span>
+        </div>
+        <pre id="resultText" class="response"></pre>
+        <ul id="resultFindings" class="findings"></ul>
+      </div>
+    </section>
+
+    <!-- ===================== SOC dashboard ===================== -->
+    <section class="panel" aria-labelledby="soc-title">
+      <div class="panel-head">
+        <h2 id="soc-title">Security events</h2>
+        <label class="toggle"><input type="checkbox" id="autoRefresh" checked> live</label>
+      </div>
+
+      <label for="adminKey">Admin API key</label>
+      <div class="row">
+        <input id="adminKey" type="password" autocomplete="off" placeholder="X-API-Key for /v1/audit/*">
+        <button id="loadBtn">Load</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span id="statTotal">–</span><small>events</small></div>
+        <div class="stat stat-allow"><span id="statAllow">–</span><small>allowed</small></div>
+        <div class="stat stat-redact"><span id="statRedact">–</span><small>redacted</small></div>
+        <div class="stat stat-block"><span id="statBlock">–</span><small>blocked</small></div>
+      </div>
+
+      <div class="row filter-row">
+        <label for="actionFilter" class="inline">Filter</label>
+        <select id="actionFilter">
+          <option value="">all actions</option>
+          <option value="block">block</option>
+          <option value="redact">redact</option>
+          <option value="allow">allow</option>
+        </select>
+        <span id="topRules" class="muted small"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Time</th><th>Stage</th><th>Action</th><th>Risk</th><th>Rules</th><th>Client</th></tr>
+          </thead>
+          <tbody id="events">
+            <tr><td colspan="6" class="muted">Enter an admin key to load events.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
