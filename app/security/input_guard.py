@@ -117,6 +117,17 @@ INJECTION_RULES: tuple[InjectionRule, ...] = (
            r".{0,40}?\b(follow|execute|run|obey|do what)\b"),
         0.5,
     ),
+    # Low-confidence "monitor" rule: its weight sits below the default block
+    # threshold, so on its own it only FLAGS the prompt for the dashboard.
+    # "What are your rules for returns?" is a normal customer question, but
+    # combined with any other signal (e.g. a role hijack) it tips into a block.
+    InjectionRule(
+        "PI-009", "instruction_probing",
+        "Asks about the model's own rules or instructions (low confidence, flag only)",
+        _r(r"\b(what (are|were)|list|tell me|show me)\b.{0,15}?\byour\s+"
+           r"(rules|instructions|guidelines|directives|constraints)\b"),
+        0.35,
+    ),
 )
 
 _B64_CANDIDATE = re.compile(r"[A-Za-z0-9+/]{24,}={0,2}")
